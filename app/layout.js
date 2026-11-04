@@ -1,9 +1,21 @@
 import './globals.css'
-import { Inter } from 'next/font/google'
+import { Inter, JetBrains_Mono } from 'next/font/google'
 import { AuthProvider } from './providers/AuthProvider'
 import MobileOptimizations from './components/MobileOptimizations'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-inter',
+})
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
+  display: 'swap',
+  variable: '--font-jetbrains-mono',
+})
 
 export const metadata = {
   title: '🤖 Mirage AI - Next-Gen Multi-Model AI Platform',
@@ -50,7 +62,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body className={inter.className}>
         <MobileOptimizations />
         <AuthProvider>

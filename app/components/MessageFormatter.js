@@ -17,7 +17,7 @@ export default function MessageFormatter({ content, isStreaming = false, model =
   }
 
   // Check if this is a Claude response
-  const isClaude = model === 'claude-4' || content.includes('Claude') || content.includes('Anthropic')
+  const isClaude = model === 'claude-4' || (typeof content === 'string' && (content.includes('Claude') || content.includes('Anthropic')))
 
   // Format the content with proper line breaks and structure
   const formatContent = (text) => {
