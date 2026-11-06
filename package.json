@@ -17,14 +17,17 @@
     "autoprefixer": "^10.4.16",
     "clsx": "^2.0.0",
     "lucide-react": "^0.294.0",
-    "next": "^14.0.0",
+    "next": "^15.5.28",
     "postcss": "^8.4.31",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "tailwindcss": "^3.3.0"
   },
   "devDependencies": {
-    "eslint": "^8.0.0",
-    "eslint-config-next": "^14.0.0"
+    "eslint": "^9.26.0",
+    "eslint-config-next": "^15.5.28"
+  },
+  "overrides": {
+    "web-streams-polyfill": "4.0.0"
   }
 }

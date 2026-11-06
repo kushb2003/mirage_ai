@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { createHash, timingSafeEqual } from 'crypto'
 
 // Web search API configurations
 const SERPER_API_URL = 'https://google.serper.dev/search'
@@ -112,7 +113,30 @@ async function searchWithBing(query) {
   }
 }
 
+// Only trusted server-side callers (e.g. /api/chat) that present the shared
+// internal token may run searches. Fails closed when the token is unset.
+function isAuthorizedInternalCaller(request) {
+  const expected = process.env.WEBSEARCH_INTERNAL_TOKEN
+  if (typeof expected !== 'string' || expected.length === 0) {
+    return false
+  }
+  const provided = request.headers.get('x-internal-token')
+  if (typeof provided !== 'string' || provided.length === 0) {
+    return false
+  }
+  const providedDigest = createHash('sha256').update(provided).digest()
+  const expectedDigest = createHash('sha256').update(expected).digest()
+  return timingSafeEqual(providedDigest, expectedDigest)
+}
+
 export async function POST(request) {
+  if (!isAuthorizedInternalCaller(request)) {
+    return NextResponse.json(
+      { success: false, error: 'Unauthorized' },
+      { status: 401 }
+    )
+  }
+
   try {
     const { query, stream = false } = await request.json()
 
@@ -191,7 +215,7 @@ export async function POST(request) {
             console.error('Streaming search error:', error)
             controller.enqueue(encoder.encode(`data: ${JSON.stringify({ 
               type: 'error', 
-              error: error.message,
+              error: 'Search failed',
               done: true 
             })}\n\n`))
             controller.close()
