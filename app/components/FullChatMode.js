@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth'
 import { Send, User, Bot, Plus, MessageCircle, Settings, Home, Search, CheckCircle, ChevronDown, Menu, X } from 'lucide-react'
 import Link from 'next/link'
 import MessageFormatter from './MessageFormatter'
+import { getChatAuthHeaders } from '../../lib/chatAuth'
 
 const availableModels = [
   {
@@ -166,10 +167,12 @@ export default function FullChatMode() {
     // Generate streaming responses for selected models
     modelsToProcess.forEach(async (model) => {
       try {
+        const authHeaders = await getChatAuthHeaders()
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            ...authHeaders,
           },
           body: JSON.stringify({
             message: userMessage,

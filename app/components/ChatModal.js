@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { X, Send, Loader2, CheckCircle, ChevronDown, Search, ArrowLeft, User, Bot, MessageCircle } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 import MessageFormatter from './MessageFormatter'
+import { getChatAuthHeaders } from '../../lib/chatAuth'
 
 const availableModels = [
   {
@@ -71,10 +72,12 @@ export default function ChatModal({ onClose }) {
     // Generate responses for all models in parallel
     const responsePromises = availableModels.map(async (model) => {
       try {
+        const authHeaders = await getChatAuthHeaders()
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            ...authHeaders,
           },
           body: JSON.stringify({
             message: userMessage,
@@ -169,10 +172,12 @@ export default function ChatModal({ onClose }) {
     setFullModeConversation(prev => [...prev, aiMessage])
 
     try {
+      const authHeaders = await getChatAuthHeaders()
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...authHeaders,
         },
         body: JSON.stringify({
           message: message,
